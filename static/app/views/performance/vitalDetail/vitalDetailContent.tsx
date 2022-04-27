@@ -219,11 +219,11 @@ class VitalDetailContent extends Component<Props, State> {
     return (
       <Fragment>
         {hasPageFilters && (
-          <StyledPageFilterBar condensed>
+          <PageFilterBar condensed>
             <ProjectPageFilter />
             <EnvironmentPageFilter />
             <DatePageFilter />
-          </StyledPageFilterBar>
+          </PageFilterBar>
         )}
         <StyledSearchBar
           searchSource="performance_vitals"
@@ -337,10 +337,6 @@ class VitalDetailContent extends Component<Props, State> {
 }
 
 export default withProjects(VitalDetailContent);
-
-const StyledPageFilterBar = styled(PageFilterBar)`
-  margin-bottom: ${space(1)};
-`;
 
 const StyledDescription = styled('div')`
   font-size: ${p => p.theme.fontSizeMedium};

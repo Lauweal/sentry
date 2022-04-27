@@ -238,15 +238,48 @@ class TrendsContent extends React.Component<Props, State> {
         <Layout.Body>
           <Layout.Main fullWidth>
             <DefaultTrends location={location} eventView={eventView} projects={projects}>
-              {hasPageFilters && (
-                <StyledPageFilterBar condensed>
-                  <ProjectPageFilter />
-                  <EnvironmentPageFilter />
-                  <DatePageFilter />
-                </StyledPageFilterBar>
-              )}
-              <StyledSearchContainer>
-                <StyledSearchBar
+              <FilterActions>
+                {hasPageFilters && (
+                  <PageFilterBar condensed>
+                    <ProjectPageFilter />
+                    <EnvironmentPageFilter />
+                    <DatePageFilter />
+                  </PageFilterBar>
+                )}
+                <DropdownControl
+                  data-test-id="trends-dropdown"
+                  buttonProps={{prefix: t('Percentile')}}
+                  label={currentTrendFunction.label}
+                >
+                  {TRENDS_FUNCTIONS.map(({label, field}) => (
+                    <DropdownItem
+                      key={field}
+                      onSelect={this.handleTrendFunctionChange}
+                      eventKey={field}
+                      data-test-id={field}
+                      isActive={field === currentTrendFunction.field}
+                    >
+                      {label}
+                    </DropdownItem>
+                  ))}
+                </DropdownControl>
+                <DropdownControl
+                  buttonProps={{prefix: t('Parameter')}}
+                  label={currentTrendParameter.label}
+                >
+                  {TRENDS_PARAMETERS.map(({label}) => (
+                    <DropdownItem
+                      key={label}
+                      onSelect={this.handleParameterChange}
+                      eventKey={label}
+                      data-test-id={label}
+                      isActive={label === currentTrendParameter.label}
+                    >
+                      {label}
+                    </DropdownItem>
+                  ))}
+                </DropdownControl>
+                <SearchBar
                   searchSource="trends"
                   organization={organization}
                   projectIds={trendView.project}
@@ -255,44 +288,8 @@ class TrendsContent extends React.Component<Props, State> {
                   onSearch={this.handleSearch}
                   maxQueryLength={MAX_QUERY_LENGTH}
                 />
-                <TrendsDropdown data-test-id="trends-dropdown">
-                  <DropdownControl
-                    buttonProps={{prefix: t('Percentile')}}
-                    label={currentTrendFunction.label}
-                  >
-                    {TRENDS_FUNCTIONS.map(({label, field}) => (
-                      <DropdownItem
-                        key={field}
-                        onSelect={this.handleTrendFunctionChange}
-                        eventKey={field}
-                        data-test-id={field}
-                        isActive={field === currentTrendFunction.field}
-                      >
-                        {label}
-                      </DropdownItem>
-                    ))}
-                  </DropdownControl>
-                </TrendsDropdown>
-                <TrendsDropdown>
-                  <DropdownControl
-                    buttonProps={{prefix: t('Parameter')}}
-                    label={currentTrendParameter.label}
-                  >
-                    {TRENDS_PARAMETERS.map(({label}) => (
-                      <DropdownItem
-                        key={label}
-                        onSelect={this.handleParameterChange}
-                        eventKey={label}
-                        data-test-id={label}
-                        isActive={label === currentTrendParameter.label}
-                      >
-                        {label}
-                      </DropdownItem>
-                    ))}
-                  </DropdownControl>
-                </TrendsDropdown>
-              </StyledSearchContainer>
-              <TrendsLayoutContainer>
+              </FilterActions>
+              <ListContainer>
                 <ChangedTransactions
                   trendChangeType={TrendChangeType.IMPROVED}
                   previousTrendFunction={previousTrendFunction}
@@ -307,7 +304,7 @@ class TrendsContent extends React.Component<Props, State> {
                   location={location}
                   setError={this.setError}
                 />
-              </TrendsLayoutContainer>
+              </ListContainer>
             </DefaultTrends>
           </Layout.Main>
         </Layout.Body>
@@ -360,31 +357,23 @@ class DefaultTrends extends React.Component<DefaultTrendsProps> {
   }
 }
 
-const StyledPageFilterBar = styled(PageFilterBar)`
-  margin-bottom: ${space(1)};
-`;
-
-const StyledSearchBar = styled(SearchBar)`
-  flex-grow: 1;
+const FilterActions = styled('div')`
+  display: grid;
+  gap: ${space(2)};
   margin-bottom: ${space(2)};
+
+  @media (min-width: ${p => p.theme.breakpoints[0]}) {
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: auto auto;
+  }
 `;
 
-const TrendsDropdown = styled('div')`
-  margin-left: ${space(1)};
-  flex-grow: 0;
-`;
-
-const StyledSearchContainer = styled('div')`
-  display: flex;
-`;
-
-const TrendsLayoutContainer = styled('div')`
+const ListContainer = styled('div')`
   display: grid;
   gap: ${space(2)};
 
-  @media (min-width: ${p => p.theme.breakpoints[1]}) {
+  @media (min-width: ${p => p.theme.breakpoints[0]}) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: stretch;
   }
 `;
 
