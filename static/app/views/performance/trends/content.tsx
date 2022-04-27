@@ -279,7 +279,7 @@ class TrendsContent extends React.Component<Props, State> {
                     </DropdownItem>
                   ))}
                 </DropdownControl>
-                <SearchBar
+                <StyledSearchBar
                   searchSource="trends"
                   organization={organization}
                   projectIds={trendView.project}
@@ -366,6 +366,10 @@ const FilterActions = styled('div')`
     grid-template-columns: 1fr auto auto;
     grid-template-rows: auto auto;
   }
+`;
+
+const StyledSearchBar = styled(SearchBar)`
+  grid-column: 1/4;
 `;
 
 const ListContainer = styled('div')`
